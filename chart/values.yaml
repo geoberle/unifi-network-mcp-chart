@@ -4,13 +4,13 @@ image:
   pullPolicy: Always
 
 service:
-  port: 3000
+  port: 3001
 
 transport: sse
 
 unifi:
   host: ""
-  port: 443
+  port: 11443
   username: ""
   password: ""
   site: default
