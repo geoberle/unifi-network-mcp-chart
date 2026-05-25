@@ -1,0 +1,42 @@
+name: Package and push Helm chart
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - chart/**
+      - .github/workflows/build.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute version
+        id: vars
+        run: |
+          TS="$(date -u +%Y%m%d%H%M%S)"
+          echo "tag=0.1.0-${TS}" >> "$GITHUB_OUTPUT"
+
+      - name: Package and push chart
+        run: |
+          TAG="${{ steps.vars.outputs.tag }}"
+          sed -i "s/^version:.*/version: ${TAG}/" chart/Chart.yaml
+          helm package chart/
+          helm push unifi-network-mcp-chart-*.tgz oci://${{ env.REGISTRY }}/geoberle

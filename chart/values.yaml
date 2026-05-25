@@ -1,0 +1,24 @@
+image:
+  repository: ghcr.io/sirkirby/unifi-network-mcp
+  tag: latest
+  pullPolicy: Always
+
+service:
+  port: 3000
+
+transport: sse
+
+unifi:
+  host: ""
+  port: 443
+  username: ""
+  password: ""
+  site: default
+  verifySsl: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 256Mi
