@@ -20,8 +20,6 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: mcp-server
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -50,6 +48,8 @@ spec:
               value: {{ .Values.unifi.verifySsl | quote }}
             - name: UNIFI_MCP_HTTP_ENABLED
               value: "true"
+            - name: UNIFI_MCP_HOST
+              value: "0.0.0.0"
             - name: UNIFI_MCP_HTTP_TRANSPORT
               value: {{ .Values.transport | quote }}
             - name: UNIFI_MCP_PORT
